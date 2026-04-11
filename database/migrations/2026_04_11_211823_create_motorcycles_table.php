@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->year('year');
-            $table->unsignedInteger('price'); // в рублях/валюте
+            $table->unsignedInteger('price');
             $table->string('currency')->default('RUB');
             $table->enum('status', ['available', 'reserved', 'sold'])->default('available');
             $table->text('description')->nullable();
