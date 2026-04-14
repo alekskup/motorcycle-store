@@ -1,18 +1,12 @@
 services:
     traefik:
         image: traefik:v3.0
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
         command:
             - "--configFile=/etc/traefik/traefik.yml"
             - "--providers.docker=true"
             - "--providers.docker.exposedbydefault=false"
-            - "--entrypoints.web.address=:80"
-            - "--entrypoints.websecure.address=:443"
-            - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
-            - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-            - "--certificatesresolvers.letsencrypt.acme.email=ваш@email.com"
-            - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+            - "--providers.docker.network=sail"
+            - "--api.dashboard=false"
         ports:
             - "80:80"
             - "443:443"
@@ -25,8 +19,6 @@ services:
         networks:
             - sail
         restart: unless-stopped
-        # security_opt:
-        #   - label=disable
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.5

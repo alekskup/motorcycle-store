@@ -16,12 +16,3 @@ certificatesResolvers:
       storage: /letsencrypt/acme.json
       httpChallenge:
         entryPoint: web
-
-providers:
-  docker:
-    exposedByDefault: false
-  file:
-    filename: /dev/null
-
-api:
-  dashboard: false
