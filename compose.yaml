@@ -1,8 +1,10 @@
 services:
     traefik:
         image: traefik:v3.0
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         command:
-            - "--configFile=/root/projects/motorcycle-store/traefik/traefik.yml"
+            - "--configFile=/etc/traefik/traefik.yml"
         ports:
             - "80:80"
             - "443:443"
@@ -24,7 +26,7 @@ services:
                 WWWUSER: 1000
         image: sail-8.5/app
         extra_hosts:
-            - 'host.docker.internal:host-gateway'
+            - "host.docker.internal:host-gateway"
             -
         labels:
             - "traefik.enable=true"
