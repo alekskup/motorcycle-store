@@ -15,7 +15,8 @@ final readonly class FilterCriteria
         public ?int $brandId = null,
         public ?int $priceMin = null,
         public ?int $priceMax = null,
-        public  int $page = self::DEFAULT_PAGE,
-        public  int $perPage = self::DEFAULT_PER_PAGE
+        public ?string $sort = null,
+        public int $page = self::DEFAULT_PAGE,
+        public int $perPage = self::DEFAULT_PER_PAGE,
     ) {}
 }
