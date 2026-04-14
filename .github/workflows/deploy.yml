@@ -1,42 +1,47 @@
-name: Deploy to VPS
+name: Auto Deploy to VPS
 
+# По событию пуша в master
 on:
   push:
     branches: [ master ]
+  # Ручной запуск из гита
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
+      - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
           script: |
-            cd /var/www/motorcycle-store
+            echo "🔐 Connected to VPS"
 
-            echo "📥 Pulling code..."
+            cd ${{ secrets.VPS_PROJECT_PATH }}
+
+            echo "📥 Pulling latest code from master..."
             git pull origin master
-
-            echo "🔒 SELinux contexts..."
+            echo "🔒 Restoring SELinux contexts..."
             restorecon -Rv . 2>/dev/null || true
-
-            echo "📦 Composer dependencies..."
+            echo "📦 Installing PHP dependencies..."
+            rm -rf vendor
             docker compose run --rm laravel.test composer install --optimize-autoloader --no-dev --quiet
-
-            echo "🗄 Database migrations..."
+            echo "🗄 Running database migrations..."
             docker compose run --rm laravel.test php artisan migrate --force --quiet
-
-            echo "🎨 Frontend build..."
+            echo "🎨 Building frontend assets..."
             docker compose run --rm laravel.test npm ci --quiet
             docker compose run --rm laravel.test npm run build --quiet
-
-            echo "🚀 Restarting services..."
+            echo "🔄 Restarting Docker services..."
             docker compose up -d --remove-orphans
 
-            echo "🧹 Clearing cache..."
+            echo "🧹 Clearing Laravel cache..."
             docker compose exec -T laravel.test php artisan optimize:clear
 
-            echo "✅ Deploy complete!"
+            echo "✅ Deployment completed successfully!"
+
+            echo "🏥 Health check..."
+            curl -f http://127.0.0.1/up || echo "⚠️ Health endpoint not available"
