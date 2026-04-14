@@ -22,10 +22,11 @@ jobs:
           command_timeout: 600s
           debug: true
           script: |
+            set -e
             echo "🔐 Connected to VPS"
 
             cd ${{ secrets.VPS_PROJECT_PATH }}
-
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/moto_key -o StrictHostKeyChecking=no"
             echo "📥 Pulling latest code from master..."
             git pull origin master
             echo "🔒 Restoring SELinux contexts..."
