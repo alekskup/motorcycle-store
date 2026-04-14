@@ -18,7 +18,7 @@ jobs:
             cd /var/www/motorcycle-store
 
             echo "📥 Pulling code..."
-            git pull origin main
+            git pull origin master
 
             echo "🔒 SELinux contexts..."
             restorecon -Rv . 2>/dev/null || true
