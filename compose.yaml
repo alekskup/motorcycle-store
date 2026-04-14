@@ -5,6 +5,10 @@ services:
             - "host.docker.internal:host-gateway"
         command:
             - "--configFile=/etc/traefik/traefik.yml"
+            - "--providers.file.filename=/etc/traefik/traefik.yml"
+            - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
         ports:
             - "80:80"
             - "443:443"
